@@ -24,7 +24,7 @@ class BundleNameFinderTest extends \PHPUnit_Framework_TestCase
         $bundleNameFinder = new BundleNameFinder();
         $bundleNames = $bundleNameFinder->getBundleNames();
 
-        $this->assertTrue(count($bundleNames) > 0);
+        $this->assertContains('Kernel', $bundleNames);
     }
 
 }

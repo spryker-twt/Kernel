@@ -11,7 +11,6 @@ use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\BundleDependencyProviderResolverAwareTrait;
 use Spryker\Zed\Kernel\ClassResolver\Factory\FactoryResolver;
 use Spryker\Zed\Kernel\Container;
-use Spryker\Zed\Kernel\Dependency\Injector\DependencyInjector;
 use Spryker\Zed\Kernel\Persistence\QueryContainer\QueryContainerInterface;
 use Spryker\Zed\Propel\Communication\Plugin\Connection;
 
@@ -36,19 +35,6 @@ abstract class AbstractQueryContainer implements QueryContainerInterface
         Container $container
     ) {
         $dependencyProvider->providePersistenceLayerDependencies($container);
-    }
-
-    /**
-     * @param \Spryker\Zed\Kernel\Dependency\Injector\DependencyInjector $dependencyInjector
-     * @param \Spryker\Zed\Kernel\Container $container
-     *
-     * @return \Spryker\Shared\Kernel\ContainerInterface
-     */
-    protected function injectExternalDependencies(
-        DependencyInjector $dependencyInjector,
-        Container $container
-    ) {
-        return $dependencyInjector->injectPersistenceLayerDependencies($container);
     }
 
     /**

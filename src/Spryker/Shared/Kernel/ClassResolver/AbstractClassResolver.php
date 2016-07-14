@@ -19,22 +19,31 @@ abstract class AbstractClassResolver
     const KEY_STORE = '%store%';
 
     /**
+     * @var array
+     */
+    private static $classMap;
+
+    /**
      * @var string
      */
     private $resolvedClassName;
 
     /**
+     * @var array
+     */
+    private $classNames = [];
+
+    public function __construct()
+    {
+        if (empty(self::$classMap)) {
+            self::$classMap = require APPLICATION_VENDOR_DIR . '/composer/autoload_classmap.php';
+        }
+    }
+
+    /**
      * @return string
      */
     abstract protected function getClassPattern();
-
-    /**
-     * @param string $namespace
-     * @param string|null $store
-     *
-     * @return string
-     */
-    abstract protected function buildClassName($namespace, $store = null);
 
     /**
      * @return bool
@@ -44,7 +53,9 @@ abstract class AbstractClassResolver
         $classNames = $this->buildClassNames();
 
         foreach ($classNames as $className) {
-            if ($this->classExists($className)) {
+            //            if (class_exists($className)) {
+            $lookUpName = ltrim($className, '\\');
+            if (isset(self::$classMap[$lookUpName])) {
                 $this->resolvedClassName = $className;
 
                 return true;
@@ -52,32 +63,6 @@ abstract class AbstractClassResolver
         }
 
         return false;
-    }
-
-    /**
-     * @param string $className
-     *
-     * @return bool
-     */
-    protected function classExists($className)
-    {
-        $resolverCacheManager = $this->createResolverCacheManager();
-
-        if (!$resolverCacheManager->useCache()) {
-            return class_exists($className);
-        }
-
-        $cacheProvider = $resolverCacheManager->createClassResolverCacheProvider();
-
-        return $cacheProvider->getCache()->classExists($className);
-    }
-
-    /**
-     * @return \Spryker\Shared\Kernel\ClassResolver\ResolverCacheFactoryInterface
-     */
-    protected function createResolverCacheManager()
-    {
-        return new ResolverCacheManager();
     }
 
     /**
@@ -93,43 +78,41 @@ abstract class AbstractClassResolver
      */
     private function buildClassNames()
     {
-        $classNames = [];
+        $this->addProjectClassNames();
+        $this->addCoreClassNames();
 
-        $classNames = $this->addProjectClassNames($classNames);
-        $classNames = $this->addCoreClassNames($classNames);
-
-        return $classNames;
+        return $this->classNames;
     }
 
     /**
-     * @param array $classNames
-     *
-     * @return array
+     * @return void
      */
-    private function addProjectClassNames(array $classNames)
+    private function addProjectClassNames()
     {
         $storeName = Store::getInstance()->getStoreName();
         foreach ($this->getProjectNamespaces() as $namespace) {
-            $classNames[] = $this->buildClassName($namespace, $storeName);
-            $classNames[] = $this->buildClassName($namespace);
+            $this->classNames[] = $this->buildClassName($namespace, $storeName);
+            $this->classNames[] = $this->buildClassName($namespace);
         }
-
-        return $classNames;
     }
 
     /**
-     * @param array $classNames
-     *
-     * @return array
+     * @return void
      */
-    private function addCoreClassNames(array $classNames)
+    private function addCoreClassNames()
     {
         foreach ($this->getCoreNamespaces() as $namespace) {
-            $classNames[] = $this->buildClassName($namespace);
+            $this->classNames[] = $this->buildClassName($namespace);
         }
-
-        return $classNames;
     }
+
+    /**
+     * @param string $namespace
+     * @param string|null $store
+     *
+     * @return string
+     */
+    abstract protected function buildClassName($namespace, $store = null);
 
     /**
      * @throws \Exception

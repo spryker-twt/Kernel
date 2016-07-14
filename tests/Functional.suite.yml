@@ -1,6 +1,5 @@
 class_name: FunctionalTester
 modules:
     enabled:
-        - \Testify\Module\Environment
-        - \Config\Module\ConfigInit
+        - Filesystem
         - \Kernel\Module\Functional

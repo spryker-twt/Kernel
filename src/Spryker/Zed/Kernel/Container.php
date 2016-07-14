@@ -7,13 +7,11 @@
 
 namespace Spryker\Zed\Kernel;
 
-use Spryker\Shared\Kernel\ContainerInterface;
-
-class Container extends \Pimple implements ContainerInterface
+class Container extends \Pimple
 {
 
     /**
-     * @return \Generated\Zed\Ide\AutoCompletion|\Spryker\Shared\Kernel\LocatorLocatorInterface
+     * @return \Generated\Zed\Ide\AutoCompletion
      */
     public function getLocator()
     {
