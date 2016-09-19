@@ -17,7 +17,7 @@
     "spryker/silex": "^2.0.0",
     "spryker/storage": "^2.0.0",
     "spryker/symfony": "^2.0.0",
-    "spryker/transfer": "^2.0.0",
+    "spryker/transfer": "^2.0.0 || ^3.0.0",
     "spryker/zed-request": "^2.0.0",
     "spryker/zend": "^2.0.0"
   },
